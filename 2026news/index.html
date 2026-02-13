@@ -1,1 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李献兵·AI导航助手</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        #login-box { text-align: center; padding: 40px 0; }
+        #main-ui { display: none; }
+        
+        /* 朗读区样式 */
+        textarea { width: 100%; height: 100px; border-radius: 12px; border: 1px solid #e0e0e0; padding: 12px; box-sizing: border-box; font-size: 16px; margin: 15px 0; background: #fafafa; }
+        .btn-group { display: flex; gap: 10px; }
+        button { flex: 1; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .play { background: #07c160; color: white; }
+        .stop { background: #ff4d4f; color: white; }
+        
+        /* 核心：磁贴按钮样式 */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .tile { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; border: 1px solid #eee; padding: 20px; border-radius: 15px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .tile:active { transform: scale(0.95); }
+        .tile-icon { font-size: 30px; margin-bottom: 8px; }
+        .tile-name { font-size: 14px; font-weight: bold; color: #333; }
+        .tile-desc { font-size: 11px; color: #999; margin-top: 4px; }
+        
+        /* 磁贴颜色区分 */
+        .yt-red { border-top: 4px solid #ff0000; }
+        .news-blue { border-top: 4px solid #1890ff; }
+    </style>
+</head>
+<body>
 
+<div class="card">
+    <div id="login-box">
+        <div style="font-size: 50px; margin-bottom: 20px;">🛡️</div>
+        <h3 style="margin-bottom: 5px;">李献兵的私密空间</h3>
+        <p style="color: #999; font-size: 13px;">请输入暗号以开启 AI 导航</p>
+        <input type="password" id="pw" placeholder="暗号..." style="width:80%; padding:15px; text-align:center; font-size:24px; border-radius:10px; border:1px solid #ddd; margin: 20px 0;">
+        <button class="play" style="width: 80%;" onclick="login()">立即进入</button>
+    </div>
+
+    <div id="main-ui">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+            <div style="background: #07c160; width: 5px; height: 25px; border-radius: 5px;"></div>
+            <h2 style="margin: 0; font-size: 20px;">智能朗读播报</h2>
+        </div>
+        
+        <textarea id="text" placeholder="在此粘贴你想阅读的文字...">欢迎使用斗车哥的AI语音助手。</textarea>
+        
+        <div class="btn-group">
+            <button class="play" onclick="speak()">▶ 开始播放</button>
+            <button class="stop" onclick="window.speechSynthesis.cancel()">⏹ 停止</button>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; align-items: center; gap: 10px;">
+            <div style="background: #ff0000; width: 5px; height: 25px; border-radius: 5px;"></div>
+            <h2 style="margin: 0; font-size: 20px;">时政热点追踪</h2>
+        </div>
+
+        <div class="grid-container">
+            <a href="https://www.youtube.com/@wangwaizui" target="_blank" class="tile yt-red">
+                <span class="tile-icon">📺</span>
+                <span class="tile-name">博主A频道</span>
+                <span class="tile-desc">最新时政解析</span>
+            </a>
+            <a href="https://www.youtube.com/@TianliangZhang" target="_blank" class="tile yt-red">
+                <span class="tile-icon">🔥</span>
+                <span class="tile-name">热点直击</span>
+                <span class="tile-desc">深度内容更新</span>
+            </a>
+            <a href="https://www.youtube.com/@QGHDZ
+" target="_blank" class="tile news-blue">
+                <span class="tile-icon">🌍</span>
+                <span class="tile-name">歪歌搞笑</span>
+                <span class="tile-desc">每日必看</span>
+            </a>
+            <a href="#" class="tile" style="background: #f9f9f9;">
+                <span class="tile-icon">➕</span>
+                <span class="tile-name">等待添加</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function login() {
+        // 暗号依然是您熟悉的那个年份
+        if(document.getElementById('pw').value === '8964') {
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('main-ui').style.display = 'block';
+        } else { alert('暗号不对哦，斗车哥！'); }
+    }
+
+    function speak() {
+        window.speechSynthesis.cancel();
+        let txt = document.getElementById('text').value;
+        let m = new SpeechSynthesisUtterance(txt);
+        m.rate = 1.0;
+        // 自动识别英文还是中文
+        m.lang = /[a-zA-Z]/.test(txt) ? 'en-US' : 'zh-CN';
+        window.speechSynthesis.speak(m);
+    }
+</script>
+</body>
+</html>
