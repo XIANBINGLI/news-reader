@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>笔总中文朗读-私密版</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; box-sizing: border-box; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        
+        /* 登录界面样式 */
+        #login-area { text-align: center; padding: 20px 0; }
+        .hint { color: #d83b01; font-weight: bold; margin-bottom: 15px; display: block; }
+        input[type="password"] { width: 80%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 18px; text-align: center; margin-bottom: 20px; }
+        
+        /* 朗读界面初始隐藏 */
+        #main-content { display: none; }
+
+        textarea { width: 100%; height: 180px; border: 1px solid #ccc; border-radius: 8px; padding: 12px; box-sizing: border-box; font-size: 16px; line-height: 1.5; }
+        .controls { margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
+        input[type="range"] { width: 100%; height: 30px; }
+        .btns { margin-top: 20px; display: flex; gap: 15px; }
+        button { flex: 1; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; }
+        .play { background: #07c160; color: white; }
+        .stop { background: #fa5151; color: white; }
+        .login-btn { background: #0078d4; color: white; width: 80%; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div id="login-area">
+        <h2>身份验证</h2>
+        <span class="hint">提示词：八八加一年（4个阿拉伯数字）</span>
+        <input type="password" id="pw-input" placeholder="输入4位数字密码">
+        <button class="login-btn" onclick="checkPassword()">进入系统</button>
+    </div>
+
+    <div id="main-content">
+        <h2>📢 笔总VIP兲文朗读助手</h2>
+        <textarea id="text" placeholder="请输入中文内容...">别看我今天闹得欢，自摸鸡鸡拉清单</textarea>
+        
+        <div class="controls">
+            <label>调整语速：<span id="speedNum">1.0</span>x</label>
+            <input type="range" id="speed" min="0.5" max="2.0" step="0.1" value="1">
+        </div>
+
+        <div class="btns">
+            <button class="play" onclick="startSpeak()">开始朗读</button>
+            <button class="stop" onclick="stopSpeak()">停止</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 密码检查函数
+    function checkPassword() {
+        const pw = document.getElementById('pw-input').value;
+        // 校验：八八（1988）的第二年就是 8964
+        if (pw === "8964") {
+            document.getElementById('login-area').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+        } else {
+            alert("密码错误，请根据提示词重试！");
+        }
+    }
+
+    // 朗读逻辑保持不变
+    const speedInput = document.getElementById('speed');
+    const speedNum = document.getElementById('speedNum');
+    const textArea = document.getElementById('text');
+
+    speedInput.oninput = () => { speedNum.innerText = speedInput.value; };
+
+    function startSpeak() {
+        window.speechSynthesis.cancel();
+        const text = textArea.value.trim();
+        if (!text) return;
+
+        const msg = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
+        const zhVoice = voices.find(v => v.lang.includes('zh-CN')) || voices[0];
+        
+        if (zhVoice) msg.voice = zhVoice;
+        msg.rate = parseFloat(speedInput.value);
+        msg.lang = 'zh-CN';
+        window.speechSynthesis.speak(msg);
+    }
+
+    function stopSpeak() {
+        window.speechSynthesis.cancel();
+    }
+</script>
+
+</body>
+</html>
